@@ -1,5 +1,3 @@
-############ this file is copied from /home/yyw9094/projects/SC/KRT17/Manuscript/IntegrateAll/R_analysis/sourceCellChat.Fig5_v4.R
-
 CellChat_pipeline<-function(sub_CC=seu_H_krt17,type="triMean",trim=NULL){
   ########################################################################################
   ##data input
@@ -190,31 +188,6 @@ cellchat_plot<-function(obj.cellchat=cellchat,outFolder=outFold,objName="H"){
   }
 }
   
-# plotFunc_ABC_signaling<-function(signaling="PDGF"){
-#   stromalCell<-c("Fibroblast","Myofibroblast","SMC","Mesothelial")
-#   cc.path.temp<-cc.path_ABC[cc.path_ABC$autocrine=="Para" & cc.path_ABC$pathway_name %in% signaling & (cc.path_ABC$source %in% c("ABCs")),]
-#   colnames(cc.path.temp)[which(colnames(cc.path.temp)=="GSE")]<-"IDName"
-#   cc.path.temp$IDName<-sapply(strsplit(gsub("CC_","",cc.path.temp$IDName),split="\\."),function(x) x[1])
-#   cc.path.join<-dplyr::full_join(cc.path.temp,pCC,by="IDName")
-#   cc.path.join.unique<-unique(cc.path.join[,c("GSE","target")])
-#   #cc.path.join.unique$Disease<-factor(cc.path.join.unique$Disease,levels=c("Fibroblast","Myofibroblast","SMC","Mesothelial"))
-#   matrix.wide<-reshape2::dcast(cc.path.join.unique,GSE~target)
-#   row.names(matrix.wide)<-matrix.wide$GSE
-#   matrix.wide<-matrix.wide[,!colnames(matrix.wide) %in% "GSE"]
-#   matrix.wide2<-apply(matrix.wide,c(1,2), function(x) ifelse(is.na(x),0,1))
-#   colName<-c("Fibroblast","Myofibroblast","SMC","Mesothelial")
-#   if(all(colName %in% colnames(matrix.wide2))){
-#     matrix.wide2<-matrix.wide2[,colName]
-#   }else{
-#     notInCol<-colName[!colName %in% colnames(matrix.wide2)]
-#     df_notin<-data.frame(matrix(0,nrow=nrow(matrix.wide2),ncol=length(notInCol)))
-#     colnames(df_notin)<-notInCol;row.names(df_notin)<-row.names(matrix.wide2)
-#     matrix.wide2<-cbind(matrix.wide2,df_notin)
-#   }
-#   matrix.wide2<-matrix.wide2[,colName]
-#   matrix.wide2<-matrix.wide2[pCC$GSE,]
-#   return(matrix.wide2)
-# }
 
 ligand_receptor_source<-function(signaling="PDGF"){
   cc.path.temp<-cc.path_ABC[cc.path_ABC$autocrine=="Para" & cc.path_ABC$pathway_name %in% signaling & (cc.path_ABC$source %in% c("ABCs")),]
@@ -223,25 +196,6 @@ ligand_receptor_source<-function(signaling="PDGF"){
   cc.path.join<-dplyr::full_join(cc.path.temp,pCC,by="IDName")
   matrix.wide<-reshape2::dcast(cc.path.join,GSE~interaction_name)
   row.names(matrix.wide)<-matrix.wide$GSE
-  matrix.wide$ID<-row.names(matrix.wide)
-  
-  matrix.wide$Study<-dplyr::case_when(
-    matrix.wide$GSE %in% c("GSE122960")~"Reyfman_2019",
-    matrix.wide$GSE %in% c("GSE128033")~"Morse_2019",
-    matrix.wide$GSE %in% c("GSE128169")~"Valenzi_2019",
-    matrix.wide$GSE %in% c("GSE132771")~"Tsukui_2020",
-    matrix.wide$GSE %in% c("GSE135893")~"Habermann_2020",
-    matrix.wide$GSE %in% c("GSE136831")~"Adams_2020",
-    matrix.wide$GSE %in% c("GSE149878")~"Xu_2020",
-    matrix.wide$GSE %in% c("GSE158127")~"Bharat_2020",
-    matrix.wide$GSE %in% c("GSE159354")~"Sun_2021",
-    matrix.wide$GSE %in% c("GSE171524")~"Melms_2021",
-    matrix.wide$GSE %in% c('GSE171668')~"Delorey_2021(SN)",
-    matrix.wide$GSE %in% c('GSE171668SC')~"Delorey_2021(SC)",
-    matrix.wide$GSE %in% c("COVID_update_July2023")~"NU_snRNAseq",
-    matrix.wide$GSE %in% c("NU_CLAD")~"NU_CLAD",
-    TRUE ~ "Unknown")
-  
   matrix.wide<-matrix.wide[,!colnames(matrix.wide) %in% "GSE",drop=FALSE]
   matrix.wide<-matrix.wide[pCC$GSE,]
   matrix.wide$index<-(1:nrow(matrix.wide))
@@ -258,24 +212,6 @@ ligand_receptor_target<-function(signaling="PDGF"){
   matrix.wide<-reshape2::dcast(cc.path.join,GSE~interaction_name)
   row.names(matrix.wide)<-matrix.wide$GSE
   matrix.wide$ID<-row.names(matrix.wide)
-  
-  matrix.wide$Study<-dplyr::case_when(
-    matrix.wide$GSE %in% c("GSE122960")~"Reyfman_2019",
-    matrix.wide$GSE %in% c("GSE128033")~"Morse_2019",
-    matrix.wide$GSE %in% c("GSE128169")~"Valenzi_2019",
-    matrix.wide$GSE %in% c("GSE132771")~"Tsukui_2020",
-    matrix.wide$GSE %in% c("GSE135893")~"Habermann_2020",
-    matrix.wide$GSE %in% c("GSE136831")~"Adams_2020",
-    matrix.wide$GSE %in% c("GSE149878")~"Xu_2020",
-    matrix.wide$GSE %in% c("GSE158127")~"Bharat_2020",
-    matrix.wide$GSE %in% c("GSE159354")~"Sun_2021",
-    matrix.wide$GSE %in% c("GSE171524")~"Melms_2021",
-    matrix.wide$GSE %in% c('GSE171668')~"Delorey_2021(SN)",
-    matrix.wide$GSE %in% c('GSE171668SC')~"Delorey_2021(SC)",
-    matrix.wide$GSE %in% c("COVID_update_July2023")~"NU_snRNAseq",
-    matrix.wide$GSE %in% c("NU_CLAD")~"NU_CLAD",
-    TRUE ~ "Unknown")
-  
   matrix.wide<-matrix.wide[,!colnames(matrix.wide) %in% "GSE",drop=FALSE]
   matrix.wide<-matrix.wide[pCC$GSE,]
   matrix.wide$index<-(1:nrow(matrix.wide))
