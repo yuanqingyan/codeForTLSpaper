@@ -103,33 +103,12 @@ myNV <- plotVenn(gene_list,
 
 bothUp<-intersect(row.names(ipfUp),row.names(chpUp))
 
+
+##############################################################################################################
+##############################################################################################################
+##############################################################################################################
 library(clusterProfiler)
 library(org.Hs.eg.db)
-
-gene_df <- bitr(
-  bothUp,
-  fromType = "SYMBOL",
-  toType = "ENTREZID",
-  OrgDb = org.Hs.eg.db)
-
-ego_bp <- enrichGO(
-  gene          = gene_df$ENTREZID,
-  OrgDb         = org.Hs.eg.db,
-  keyType       = "ENTREZID",
-  ont           = "BP",
-  pAdjustMethod = "BH",
-  pvalueCutoff  = 0.1,
-  qvalueCutoff  = 0.3,
-  readable      = TRUE  # 
-);dim(ego_bp)
-
-bpro<-ego_bp[ego_bp$Description %in% c('B cell proliferation'),]
-
-
-
-##############################################################################################################
-##############################################################################################################
-##############################################################################################################
 
 AllOut<-readRDS(file="GSE150910_DE_Result.RDS")
 dat1=AllOut$dat1
